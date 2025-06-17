@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魔法答案之书</title>
+    <style>
+        body {
+            background: #2c3e50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            color: #f1c40f;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+        }
+        .answer-box {
+            background: #34495e;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #f1c40f;
+        }
+        #answer {
+            color: #ecf0f1;
+            font-size: 1.8rem;
+            line-height: 1.6;
+            font-weight: bold;
+        }
+        .btn {
+            background: #f1c40f;
+            color: #2c3e50;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4);
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(241, 196, 15, 0.6);
+        }
+        .instruction {
+            color: #bdc3c7;
+            margin-top: 30px;
+            font-size: 0.9rem;
+        }
+        /* 魔法粒子效果 */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 魔法粒子背景 -->
+    <canvas class="particles" id="particles"></canvas>
+    
+    <div class="container">
+        <h1>🔮 答案之书</h1>
+        
+        <div class="answer-box">
+            <p id="answer">触碰获取神秘答案...</p>
+        </div>
+        
+        <button class="btn" onclick="showAnswer()">再试一次</button>
+        
+        <p class="instruction">将手机贴近NFC标签获取新答案</p>
+    </div>
+
+    <script>
+        // ===== 答案库 =====
+        const answers = [
+            "是的，毫无疑问",
+            "时机尚未成熟",
+            "跟随你的直觉",
+            "大胆尝试吧",
+            "结果会让你惊喜",
+            "保持耐心等待",
+            "换个角度思考",
+            "这不是最佳选择",
+            "相信你的第一感觉",
+            "会有贵人相助",
+            "放手一搏",
+            "谨慎行事为妙",
+            "答案就在你心中",
+            "命运正在转折",
+            "乌云即将散去",
+            "机遇即将来临",
+            "暂缓行动",
+            "全力向前冲",
+            "需要更多准备",
+            "会有意外收获"
+            // 可继续添加更多答案...
+        ];
+        
+        // ===== 生成随机答案 =====
+        function getRandomAnswer() {
+            const randomIndex = Math.floor(Math.random() * answers.length);
+            return answers[randomIndex];
+        }
+        
+        // ===== 显示答案 =====
+        function showAnswer() {
+            const answerElement = document.getElementById('answer');
+            
+            // 添加魔法效果
+            answerElement.innerHTML = "✨ 正在召唤答案...";
+            setTimeout(() => {
+                answerElement.innerHTML = getRandomAnswer();
+                createParticles();
+            }, 800);
+        }
+        
+        // ===== 页面加载时自动显示答案 =====
+        window.onload = showAnswer;
+        
+        // ===== 粒子动画效果 =====
+        function createParticles() {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const particles = [];
+            const particleCount = 100;
+            
+            // 创建粒子
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 3 + 1,
+                    color: `hsl(${Math.random() * 60 + 30}, 100%, 60%)`,
+                    speed: Math.random() * 3 + 1,
+                    angle: Math.random() * Math.PI * 2
+                });
+            }
+            
+            // 绘制粒子
+            function drawParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particles.forEach(particle => {
+                    ctx.beginPath();
+                    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = particle.color;
+                    ctx.fill();
+                    
+                    // 移动粒子
+                    particle.x += Math.cos(particle.angle) * particle.speed;
+                    particle.y += Math.sin(particle.angle) * particle.speed;
+                    
+                    // 边界检查
+                    if (particle.x < 0 || particle.x > canvas.width || 
+                        particle.y < 0 || particle.y > canvas.height) {
+                        particle.x = Math.random() * canvas.width;
+                        particle.y = Math.random() * canvas.height;
+                    }
+                });
+                
+                requestAnimationFrame(drawParticles);
+            }
+            
+            drawParticles();
+        }
+    </script>
+</body>
+</html>
